@@ -33,6 +33,27 @@ describe Post, type: :model do
     end
   end
 
+  context 'with a lazy attribute' do
+    let(:post1) { create :post, :published }
+    let(:post2) { create :post, :published }
+    let(:lazy_attribute_post) { create :post, :lazy_published_at }
+
+    it 'static attributes create value when evaluated' do
+      # they are equal
+      expect(post1.published_at).to be == post2.published_at
+    end
+
+    it 'should not be equal to static value' do
+      # they are not equal
+      expect(lazy_attribute_post.published_at).not_to be == post2.published_at
+    end
+
+    it 'generate value later on evaluation step' do
+      # it creates later then the static published at
+      expect(lazy_attribute_post.published_at).to be > post2.published_at
+    end
+  end
+
   context 'with a trait' do
     # default post has a published_at nil
     let(:post) { create(:post) }
